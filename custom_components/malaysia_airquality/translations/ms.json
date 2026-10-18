@@ -1,0 +1,61 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Malaysia Air Quality Status",
+        "description": "Pilih stesen APIMS JAS, atau ikut stesen terdekat dengan zon Home anda.",
+        "data": {
+          "station": "Stesen"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Tidak dapat menghubungi APIMS (eqms.doe.gov.my)."
+    },
+    "abort": {
+      "already_configured": "Stesen ini telah dikonfigurasi."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Selang kemas kini (minit)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "api": {
+        "name": "Indeks Pencemar Udara"
+      },
+      "status": {
+        "name": "Status",
+        "state": {
+          "good": "Baik",
+          "moderate": "Sederhana",
+          "unhealthy": "Tidak Sihat",
+          "very_unhealthy": "Sangat Tidak Sihat",
+          "hazardous": "Berbahaya",
+          "unavailable": "Tiada Data"
+        }
+      },
+      "pollutant": {
+        "name": "Pencemar Dominan"
+      },
+      "station": {
+        "name": "Stesen"
+      },
+      "distance": {
+        "name": "Jarak Stesen"
+      },
+      "updated": {
+        "name": "Bacaan Terakhir"
+      },
+      "stations": {
+        "name": "Semua Stesen"
+      }
+    }
+  }
+}
