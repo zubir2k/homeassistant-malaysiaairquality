@@ -1,0 +1,61 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Malaysia Air Quality Status",
+        "description": "Pick a DOE APIMS station, or let it follow the station nearest to your Home zone.",
+        "data": {
+          "station": "Station"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to reach APIMS (eqms.doe.gov.my)."
+    },
+    "abort": {
+      "already_configured": "This station is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Update interval (minutes)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "api": {
+        "name": "Air Pollutant Index"
+      },
+      "status": {
+        "name": "Status",
+        "state": {
+          "good": "Good",
+          "moderate": "Moderate",
+          "unhealthy": "Unhealthy",
+          "very_unhealthy": "Very Unhealthy",
+          "hazardous": "Hazardous",
+          "unavailable": "Not Available"
+        }
+      },
+      "pollutant": {
+        "name": "Dominant Pollutant"
+      },
+      "station": {
+        "name": "Station"
+      },
+      "distance": {
+        "name": "Station Distance"
+      },
+      "updated": {
+        "name": "Last Reading"
+      },
+      "stations": {
+        "name": "All Stations"
+      }
+    }
+  }
+}
