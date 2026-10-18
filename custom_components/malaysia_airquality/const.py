@@ -5,7 +5,7 @@ from datetime import timedelta
 from zoneinfo import ZoneInfo
 
 DOMAIN = "malaysia_airquality"
-VERSION = "0.2.5"
+VERSION = "0.2.6"
 CARD_URL = f"/{DOMAIN}"
 
 API_URL = (
