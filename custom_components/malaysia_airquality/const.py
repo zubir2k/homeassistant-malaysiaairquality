@@ -5,7 +5,7 @@ from datetime import timedelta
 from zoneinfo import ZoneInfo
 
 DOMAIN = "malaysia_airquality"
-VERSION = "0.2.6"
+VERSION = "0.2.7"
 CARD_URL = f"/{DOMAIN}"
 
 API_URL = (
@@ -14,7 +14,12 @@ API_URL = (
 )
 API_PARAMS = {
     "f": "json",
-    "outFields": "*",
+    # "*" only returns the proxy's default subset (no concentrations), so name every field.
+    "outFields": ",".join((
+        "STATION_ID", "DATETIME", "API", "CLASS", "PARAM_SELECTED",
+        "STATION_LOCATION", "PLACE", "STATE_NAME", "REGION_NAME", "STATION_CATEGORY",
+        "LATITUDE", "LONGITUDE", "PM25_CONC", "PM10_CONC",
+    )),
     "returnGeometry": "false",
     "where": "1=1",
 }
