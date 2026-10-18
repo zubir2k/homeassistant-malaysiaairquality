@@ -1,6 +1,10 @@
-# Malaysia Air Quality Status
+![APIMS](custom_components/malaysia_airquality/brand/logo.png)
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![GitHub Repo stars](https://img.shields.io/github/stars/zubir2k/homeassistant-malaysiaairquality?style=social)](https://github.com/zubir2k/homeassistant-malaysiaairquality/stargazers)
+[![hacs_badge](https://img.shields.io/badge/HACS-Integration-41BDF5.svg)](https://github.com/hacs/integration)
+![GitHub all releases](https://img.shields.io/badge/dynamic/json?color=41BDF5&logo=home-assistant&label=Download%20Count&suffix=%20installs&cacheSeconds=15600&url=https://analytics.home-assistant.io/custom_integrations.json&query=$.malaysia_airquality.total)
+[![Buy](https://img.shields.io/badge/Belanja-Coffee-yellow.svg)](https://zubirco.de/buymecoffee)
+[![GitHub Release](https://img.shields.io/github/release/zubir2k/homeassistant-malaysiaairquality.svg)](https://github.com/zubir2k/homeassistant-malaysiaairquality/releases/)
 
 Air Pollutant Index (API / IPU) from the Department of Environment Malaysia's **APIMS** network in Home Assistant. It covers 66 fixed stations plus mobile units, refreshed hourly by DOE.
 
@@ -12,6 +16,9 @@ Air Pollutant Index (API / IPU) from the Department of Environment Malaysia's **
 - English and Bahasa Melayu translations
 
 ## Installation
+
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=malaysia_airquality)
+
 HACS → Custom repositories → `zubir2k/homeassistant-malaysiaairquality` (Integration), install, then restart.
 
 ## Setup
@@ -19,6 +26,8 @@ Settings → Devices & Services → Add Integration → **Malaysia Air Quality S
 
 ## Map card
 The integration ships its own Lovelace card, so there's nothing extra to install. It shows every station, coloured by the official DOE band (blue, green, yellow, orange, red), with your Home marked and your selected station outlined.
+
+<img width="511" height="452" alt="image" src="https://github.com/user-attachments/assets/4b115e7d-6e56-4fa0-aad7-6c90711fe462" />
 
 ```yaml
 type: custom:malaysia-airquality-card
@@ -36,6 +45,9 @@ The `All Stations` sensor feeds the card. Its station list is kept out of the re
 
 ## Gauge card
 A stock gauge in the DOE colours. The band name shows in place of the number; drop the `label` lines to show the reading instead.
+
+<img width="511" height="211" alt="image" src="https://github.com/user-attachments/assets/b80c1b7f-77ab-49ce-8feb-2f5daba170b6" />
+
 
 ```yaml
 type: gauge
