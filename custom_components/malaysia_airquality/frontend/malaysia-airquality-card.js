@@ -2,7 +2,7 @@
  * Every DOE APIMS station on a map, coloured by the official API band.
  * Served by the malaysia_airquality integration; no separate install needed.
  */
-const CARD_VERSION = "0.2.6";
+const CARD_VERSION = "0.2.7";
 const BASE = "/malaysia_airquality";
 
 // DOE Malaysia API bands and their official colours
