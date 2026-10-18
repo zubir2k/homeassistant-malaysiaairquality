@@ -30,6 +30,12 @@
       "api": {
         "name": "Air Pollutant Index"
       },
+      "pm25": {
+        "name": "PM2.5"
+      },
+      "pm10": {
+        "name": "PM10"
+      },
       "status": {
         "name": "Status",
         "state": {
