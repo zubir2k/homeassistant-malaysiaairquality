@@ -1,0 +1,6 @@
+{
+  "name": "Malaysia Air Quality Status",
+  "homeassistant": "2024.10.0",
+  "country": "MY",
+  "render_readme": true
+}
