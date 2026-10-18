@@ -29,6 +29,8 @@ class Station:
     pollutant: str | None
     api_class: str | None
     updated: datetime | None
+    pm25: float | None = None  # µg/m³, current hourly concentration
+    pm10: float | None = None
 
     @property
     def mobile(self) -> bool:
@@ -41,6 +43,15 @@ def _parse_time(ms: int | None) -> datetime | None:
         return None
     naive = datetime.fromtimestamp(ms / 1000, timezone.utc).replace(tzinfo=None)
     return naive.replace(tzinfo=MYT)
+
+
+def _conc(value) -> float | None:
+    """Concentration in µg/m³; APIMS uses negatives/None for no data."""
+    try:
+        v = float(value)
+    except (TypeError, ValueError):
+        return None
+    return round(v, 1) if v >= 0 else None
 
 
 def _parse(attrs: dict) -> Station | None:
@@ -63,6 +74,8 @@ def _parse(attrs: dict) -> Station | None:
         pollutant=attrs.get("PARAM_SELECTED"),
         api_class=attrs.get("CLASS"),
         updated=_parse_time(attrs.get("DATETIME")),
+        pm25=_conc(attrs.get("PM25_CONC")),
+        pm10=_conc(attrs.get("PM10_CONC")),
     )
 
 
