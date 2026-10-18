@@ -1,0 +1,13 @@
+{
+  "domain": "malaysia_airquality",
+  "name": "Malaysia Air Quality Status",
+  "codeowners": ["@zubir2k"],
+  "config_flow": true,
+  "dependencies": ["frontend", "http"],
+  "documentation": "https://github.com/zubir2k/homeassistant-malaysiaairquality",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/zubir2k/homeassistant-malaysiaairquality/issues",
+  "requirements": [],
+  "version": "0.2.5"
+}
