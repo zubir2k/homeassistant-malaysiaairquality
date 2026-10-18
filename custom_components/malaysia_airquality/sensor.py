@@ -8,7 +8,7 @@ from typing import Any
 from homeassistant.components.sensor import (
     SensorDeviceClass, SensorEntity, SensorEntityDescription, SensorStateClass,
 )
-from homeassistant.const import UnitOfLength
+from homeassistant.const import CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, UnitOfLength
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -33,6 +33,8 @@ ENTITY_KEYS = {
     "station": "station",
     "distance": "station_distance",
     "updated": "last_reading",
+    "pm25": "pm2_5",
+    "pm10": "pm10",
 }
 
 SENSORS: tuple[AQSensorDescription, ...] = (
@@ -42,6 +44,24 @@ SENSORS: tuple[AQSensorDescription, ...] = (
         device_class=SensorDeviceClass.AQI,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda d: d.station.api,
+    ),
+    AQSensorDescription(
+        key="pm25",
+        translation_key="pm25",
+        device_class=SensorDeviceClass.PM25,
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        suggested_display_precision=1,
+        value_fn=lambda d: d.station.pm25,
+    ),
+    AQSensorDescription(
+        key="pm10",
+        translation_key="pm10",
+        device_class=SensorDeviceClass.PM10,
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement=CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        suggested_display_precision=1,
+        value_fn=lambda d: d.station.pm10,
     ),
     AQSensorDescription(
         key="status",
