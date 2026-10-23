@@ -1,6 +1,7 @@
 {
   "domain": "malaysia_airquality",
   "name": "Malaysia Air Quality Status",
+  "categories": ["weather_alerts.air_quality_pollen"],
   "codeowners": ["@zubir2k"],
   "config_flow": true,
   "dependencies": ["frontend", "http"],
