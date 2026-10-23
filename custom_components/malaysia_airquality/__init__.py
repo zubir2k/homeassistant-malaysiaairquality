@@ -1,17 +1,14 @@
 """Malaysia Air Quality Status: DOE APIMS Air Pollutant Index for Home Assistant."""
 from __future__ import annotations
 
-from pathlib import Path
-
-from homeassistant.components.frontend import add_extra_js_url
-from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 
-from .const import CARD_URL, DOMAIN, VERSION
+from .card_registration import async_register_card, async_unregister_card
+from .const import DOMAIN
 from .coordinator import AirQualityCoordinator
 
 PLATFORMS = [Platform.SENSOR]
@@ -19,11 +16,8 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Serve the bundled Lovelace card, so no separate HACS plugin is needed."""
-    await hass.http.async_register_static_paths(
-        [StaticPathConfig(CARD_URL, str(Path(__file__).parent / "frontend"), True)]
-    )
-    add_extra_js_url(hass, f"{CARD_URL}/malaysia-airquality-card.js?v={VERSION}")
+    """Serve the bundled Lovelace card and register it for dashboards (runs once per HA start)."""
+    await async_register_card(hass)
     return True
 
 type AirQualityConfigEntry = ConfigEntry[AirQualityCoordinator]
@@ -44,3 +38,12 @@ async def async_unload_entry(hass: HomeAssistant, entry: AirQualityConfigEntry) 
 
 async def _async_reload(hass: HomeAssistant, entry: AirQualityConfigEntry) -> None:
     await hass.config_entries.async_reload(entry.entry_id)
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: AirQualityConfigEntry) -> None:
+    """Remove the card's dashboard resource when the last entry is deleted.
+
+    Not done on unload: reloading an entry should not make the card disappear.
+    """
+    if not [e for e in hass.config_entries.async_entries(DOMAIN) if e.entry_id != entry.entry_id]:
+        await async_unregister_card(hass)
