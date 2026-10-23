@@ -1,6 +1,7 @@
 {
   "domain": "malaysia_airquality",
   "name": "Malaysia Air Quality Status",
+  "after_dependencies": ["lovelace"],
   "categories": ["weather_alerts.air_quality_pollen"],
   "codeowners": ["@zubir2k"],
   "config_flow": true,
@@ -10,5 +11,5 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/zubir2k/homeassistant-malaysiaairquality/issues",
   "requirements": [],
-  "version": "0.2.7"
+  "version": "0.2.8"
 }
