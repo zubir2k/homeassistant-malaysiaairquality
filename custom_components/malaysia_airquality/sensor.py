@@ -8,16 +8,18 @@ from typing import Any
 from homeassistant.components.sensor import (
     SensorDeviceClass, SensorEntity, SensorEntityDescription, SensorStateClass,
 )
-from homeassistant.const import CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, UnitOfLength
+from homeassistant.const import (
+    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, EntityCategory, UnitOfLength,
+)
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.util import slugify
 
 from . import AirQualityConfigEntry
-from .const import CATEGORIES, CONF_STATION, DOMAIN, STATION_NEAREST, category_for
+from .const import CATEGORIES, category_for
 from .coordinator import AirQualityCoordinator, AirQualityData
+from .entity import MalaysiaAirQualityEntity, make_entity_id
+
+PARALLEL_UPDATES = 0
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -78,13 +80,17 @@ SENSORS: tuple[AQSensorDescription, ...] = (
     AQSensorDescription(
         key="station",
         translation_key="station",
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda d: d.station.name,
     ),
     AQSensorDescription(
         key="distance",
         translation_key="distance",
         device_class=SensorDeviceClass.DISTANCE,
+        state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=UnitOfLength.KILOMETERS,
+        suggested_display_precision=1,
+        entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         value_fn=lambda d: d.distance_km,
     ),
@@ -92,6 +98,7 @@ SENSORS: tuple[AQSensorDescription, ...] = (
         key="updated",
         translation_key="updated",
         device_class=SensorDeviceClass.TIMESTAMP,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda d: d.station.updated,
     ),
 )
@@ -106,39 +113,15 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-def _label(entry: AirQualityConfigEntry) -> str:
-    return "Home" if entry.data.get(CONF_STATION) == STATION_NEAREST else entry.title
-
-
-def _entity_id(entry: AirQualityConfigEntry, key: str) -> str:
-    """Fixed ids, independent of device/entry renames: sensor.apims_<home|station>_<key>."""
-    return f"sensor.apims_{slugify(_label(entry))}_{key}"
-
-
-def _device_info(entry: AirQualityConfigEntry) -> DeviceInfo:
-    label = _label(entry)
-    return DeviceInfo(
-        identifiers={(DOMAIN, f"apims_{entry.unique_id or entry.entry_id}")},
-        name=f"APIMS {label}",
-        manufacturer="Jabatan Alam Sekitar (DOE)",
-        model="APIMS",
-        entry_type=DeviceEntryType.SERVICE,
-            configuration_url="https://eqms.doe.gov.my/APIMS/main",
-    )
-
-
-class AQSensor(CoordinatorEntity[AirQualityCoordinator], SensorEntity):
-    _attr_has_entity_name = True
-    _attr_attribution = "Data provided by Department of Environment Malaysia (APIMS)"
+class AQSensor(MalaysiaAirQualityEntity, SensorEntity):
     entity_description: AQSensorDescription
 
     def __init__(self, coordinator: AirQualityCoordinator, entry: AirQualityConfigEntry,
                  description: AQSensorDescription) -> None:
-        super().__init__(coordinator)
+        super().__init__(coordinator, entry)
         self.entity_description = description
         self._attr_unique_id = f"apims_{entry.unique_id}_{description.key}"
-        self.entity_id = _entity_id(entry, ENTITY_KEYS[description.key])
-        self._attr_device_info = _device_info(entry)
+        self.entity_id = make_entity_id(entry, ENTITY_KEYS[description.key])
 
     @property
     def native_value(self) -> Any:
@@ -163,20 +146,17 @@ class AQSensor(CoordinatorEntity[AirQualityCoordinator], SensorEntity):
         }
 
 
-class AllStationsSensor(CoordinatorEntity[AirQualityCoordinator], SensorEntity):
+class AllStationsSensor(MalaysiaAirQualityEntity, SensorEntity):
     """Every APIMS station in one entity, for the map card. Not written to history."""
 
-    _attr_has_entity_name = True
     _attr_translation_key = "stations"
-    _attr_icon = "mdi:map-marker-radius"
-    _attr_attribution = "Data provided by Department of Environment Malaysia (APIMS)"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
     _unrecorded_attributes = frozenset({"stations", "selected"})
 
     def __init__(self, coordinator: AirQualityCoordinator, entry: AirQualityConfigEntry) -> None:
-        super().__init__(coordinator)
+        super().__init__(coordinator, entry)
         self._attr_unique_id = f"apims_{entry.unique_id}_stations"
-        self.entity_id = _entity_id(entry, "all_stations")
-        self._attr_device_info = _device_info(entry)
+        self.entity_id = make_entity_id(entry, "all_stations")
 
     @property
     def native_value(self) -> int:

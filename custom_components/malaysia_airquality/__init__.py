@@ -24,6 +24,7 @@ type AirQualityConfigEntry = ConfigEntry[AirQualityCoordinator]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: AirQualityConfigEntry) -> bool:
+    await async_register_card(hass)
     coordinator = AirQualityCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
@@ -45,5 +46,7 @@ async def async_remove_entry(hass: HomeAssistant, entry: AirQualityConfigEntry) 
 
     Not done on unload: reloading an entry should not make the card disappear.
     """
-    if not [e for e in hass.config_entries.async_entries(DOMAIN) if e.entry_id != entry.entry_id]:
+    if not any(
+        e.entry_id != entry.entry_id for e in hass.config_entries.async_entries(DOMAIN)
+    ):
         await async_unregister_card(hass)

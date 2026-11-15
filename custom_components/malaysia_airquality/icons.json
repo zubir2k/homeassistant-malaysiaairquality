@@ -1,0 +1,41 @@
+{
+  "entity": {
+    "sensor": {
+      "api": {
+        "default": "mdi:air-filter"
+      },
+      "pm25": {
+        "default": "mdi:blur"
+      },
+      "pm10": {
+        "default": "mdi:blur-linear"
+      },
+      "status": {
+        "default": "mdi:shield-check",
+        "state": {
+          "good": "mdi:emoticon-happy-outline",
+          "moderate": "mdi:emoticon-neutral-outline",
+          "unhealthy": "mdi:emoticon-sad-outline",
+          "very_unhealthy": "mdi:emoticon-dead-outline",
+          "hazardous": "mdi:biohazard",
+          "unavailable": "mdi:help-circle-outline"
+        }
+      },
+      "pollutant": {
+        "default": "mdi:molecule"
+      },
+      "station": {
+        "default": "mdi:map-marker"
+      },
+      "distance": {
+        "default": "mdi:map-marker-distance"
+      },
+      "updated": {
+        "default": "mdi:clock-check-outline"
+      },
+      "stations": {
+        "default": "mdi:map-marker-radius"
+      }
+    }
+  }
+}

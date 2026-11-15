@@ -7,13 +7,22 @@
         "data": {
           "station": "Stesen"
         }
+      },
+      "reconfigure": {
+        "title": "Konfigurasi Semula Malaysia Air Quality Status",
+        "description": "Pilih stesen APIMS JAS yang lain untuk dipantau.",
+        "data": {
+          "station": "Stesen"
+        }
       }
     },
     "error": {
-      "cannot_connect": "Tidak dapat menghubungi APIMS (eqms.doe.gov.my)."
+      "cannot_connect": "Tidak dapat menghubungi APIMS (eqms.doe.gov.my).",
+      "unknown": "Ralat tidak dijangka berlaku."
     },
     "abort": {
-      "already_configured": "Stesen ini telah dikonfigurasi."
+      "already_configured": "Stesen ini telah dikonfigurasi.",
+      "reconfigure_successful": "Konfigurasi semula berjaya."
     }
   },
   "options": {
@@ -62,6 +71,14 @@
       "stations": {
         "name": "Semua Stesen"
       }
+    }
+  },
+  "exceptions": {
+    "fetch_failed": {
+      "message": "Ralat mendapatkan data APIMS: {error}"
+    },
+    "station_not_found": {
+      "message": "Stesen {station} tidak ditemui dalam suapan APIMS."
     }
   }
 }

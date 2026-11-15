@@ -7,13 +7,22 @@
         "data": {
           "station": "Station"
         }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Malaysia Air Quality Status",
+        "description": "Select a different DOE APIMS station to monitor.",
+        "data": {
+          "station": "Station"
+        }
       }
     },
     "error": {
-      "cannot_connect": "Unable to reach APIMS (eqms.doe.gov.my)."
+      "cannot_connect": "Unable to reach APIMS (eqms.doe.gov.my).",
+      "unknown": "Unexpected error occurred."
     },
     "abort": {
-      "already_configured": "This station is already configured."
+      "already_configured": "This station is already configured.",
+      "reconfigure_successful": "Reconfiguration was successful."
     }
   },
   "options": {
@@ -62,6 +71,14 @@
       "stations": {
         "name": "All Stations"
       }
+    }
+  },
+  "exceptions": {
+    "fetch_failed": {
+      "message": "Error fetching APIMS data: {error}"
+    },
+    "station_not_found": {
+      "message": "Station {station} not found in APIMS feed."
     }
   }
 }

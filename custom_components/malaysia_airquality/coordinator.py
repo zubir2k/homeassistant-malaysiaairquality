@@ -46,14 +46,33 @@ class AirQualityCoordinator(DataUpdateCoordinator[AirQualityData]):
         try:
             stations = await async_fetch_stations(self._session)
         except ApimsError as err:
-            raise UpdateFailed(str(err)) from err
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="fetch_failed",
+                translation_placeholders={"error": str(err)},
+            ) from err
 
         lat, lon = self.hass.config.latitude, self.hass.config.longitude
+        has_coords = lat is not None and lon is not None
         if self.follows_home:
+            if not has_coords:
+                raise UpdateFailed(
+                    translation_domain=DOMAIN,
+                    translation_key="station_not_found",
+                    translation_placeholders={"station": self.station_conf},
+                )
             st = nearest(stations, lat, lon)
         else:
             st = stations.get(self.station_conf)
             if st is None:
-                raise UpdateFailed(f"Station {self.station_conf} not in APIMS feed")
-        dist = round(distance_km(lat, lon, st.latitude, st.longitude), 1) if lat and lon else None
+                raise UpdateFailed(
+                    translation_domain=DOMAIN,
+                    translation_key="station_not_found",
+                    translation_placeholders={"station": self.station_conf},
+                )
+        dist = (
+            round(distance_km(lat, lon, st.latitude, st.longitude), 1)
+            if has_coords
+            else None
+        )
         return AirQualityData(station=st, distance_km=dist, stations=stations)

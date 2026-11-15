@@ -1,6 +1,7 @@
 """Config flow: nearest-to-home or a fixed station, picked from the live feed."""
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import voluptuous as vol
@@ -13,51 +14,118 @@ from homeassistant.helpers.selector import (
     SelectOptionDict, SelectSelector, SelectSelectorConfig, SelectSelectorMode,
 )
 
-from .api import ApimsError, async_fetch_stations, distance_km, short_name
+from .api import ApimsError, Station, async_fetch_stations, distance_km, short_name
 from .const import (
     CONF_SCAN_INTERVAL, CONF_STATION, DEFAULT_SCAN_INTERVAL, DOMAIN, MIN_SCAN_INTERVAL, STATION_NEAREST,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class MalaysiaAirQualityFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     def __init__(self) -> None:
-        self._stations: dict = {}
+        self._stations: dict[str, Station] = {}
 
-    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        errors: dict[str, str] = {}
-        if not self._stations:
-            try:
-                self._stations = await async_fetch_stations(async_get_clientsession(self.hass))
-            except ApimsError:
-                errors["base"] = "cannot_connect"
+    async def _async_load_stations(self, errors: dict[str, str]) -> None:
+        if self._stations:
+            return
+        try:
+            self._stations = await async_fetch_stations(async_get_clientsession(self.hass))
+        except ApimsError:
+            errors["base"] = "cannot_connect"
+        except Exception:  # noqa: BLE001
+            _LOGGER.exception("Unexpected error fetching APIMS stations")
+            errors["base"] = "unknown"
 
-        if user_input is not None and not errors:
-            station = user_input[CONF_STATION]
-            await self.async_set_unique_id(station)
-            self._abort_if_unique_id_configured()
-            title = "Home" if station == STATION_NEAREST else short_name(self._stations[station].name)
-            return self.async_create_entry(title=title, data={CONF_STATION: station})
-
+    def _build_schema(self, default_station: str) -> vol.Schema:
         lat, lon = self.hass.config.latitude, self.hass.config.longitude
-        ranked = sorted(
-            self._stations.values(), key=lambda s: distance_km(lat, lon, s.latitude, s.longitude)
-        )
-        options = [SelectOptionDict(value=STATION_NEAREST, label="Home (auto, nearest station)")] + [
-            SelectOptionDict(
-                value=s.station_id,
-                label=f"{s.name} ({distance_km(lat, lon, s.latitude, s.longitude):.0f} km)"
-                + (" [mobile]" if s.mobile else ""),
+        has_coords = lat is not None and lon is not None
+        if has_coords:
+            ranked = sorted(
+                self._stations.values(),
+                key=lambda s: distance_km(lat, lon, s.latitude, s.longitude),
             )
-            for s in ranked
-        ]
-        schema = vol.Schema({
-            vol.Required(CONF_STATION, default=STATION_NEAREST): SelectSelector(
+        else:
+            ranked = sorted(self._stations.values(), key=lambda s: s.name)
+
+        options = [SelectOptionDict(value=STATION_NEAREST, label="Home (auto, nearest station)")]
+        for s in ranked:
+            dist_part = (
+                f" ({distance_km(lat, lon, s.latitude, s.longitude):.0f} km)"
+                if has_coords
+                else ""
+            )
+            mobile_part = " [mobile]" if s.mobile else ""
+            options.append(
+                SelectOptionDict(
+                    value=s.station_id,
+                    label=f"{s.name}{dist_part}{mobile_part}",
+                )
+            )
+        return vol.Schema({
+            vol.Required(CONF_STATION, default=default_station): SelectSelector(
                 SelectSelectorConfig(options=options, mode=SelectSelectorMode.DROPDOWN)
             )
         })
-        return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
+
+    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        errors: dict[str, str] = {}
+        await self._async_load_stations(errors)
+
+        if user_input is not None and not errors:
+            station = user_input[CONF_STATION]
+            if station != STATION_NEAREST and station not in self._stations:
+                errors["base"] = "cannot_connect"
+            else:
+                await self.async_set_unique_id(station)
+                self._abort_if_unique_id_configured()
+                title = (
+                    "Home"
+                    if station == STATION_NEAREST
+                    else short_name(self._stations[station].name)
+                )
+                return self.async_create_entry(title=title, data={CONF_STATION: station})
+
+        return self.async_show_form(
+            step_id="user",
+            data_schema=self._build_schema(STATION_NEAREST),
+            errors=errors,
+        )
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        reconfigure_entry = self._get_reconfigure_entry()
+        errors: dict[str, str] = {}
+        await self._async_load_stations(errors)
+
+        if user_input is not None and not errors:
+            station = user_input[CONF_STATION]
+            if station != STATION_NEAREST and station not in self._stations:
+                errors["base"] = "cannot_connect"
+            else:
+                await self.async_set_unique_id(station)
+                self._abort_if_unique_id_configured()
+                title = (
+                    "Home"
+                    if station == STATION_NEAREST
+                    else short_name(self._stations[station].name)
+                )
+                return self.async_update_reload_and_abort(
+                    reconfigure_entry,
+                    unique_id=station,
+                    title=title,
+                    data_updates={CONF_STATION: station},
+                )
+
+        current_station = reconfigure_entry.data.get(CONF_STATION, STATION_NEAREST)
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=self._build_schema(current_station),
+            errors=errors,
+        )
 
     @staticmethod
     @callback

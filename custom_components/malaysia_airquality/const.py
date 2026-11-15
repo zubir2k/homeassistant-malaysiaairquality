@@ -1,12 +1,9 @@
 """Constants for Malaysia Air Quality Status."""
 from __future__ import annotations
 
-from datetime import timedelta
-from zoneinfo import ZoneInfo
+from datetime import timedelta, timezone
 
 DOMAIN = "malaysia_airquality"
-VERSION = "0.2.8"
-CARD_URL = f"/{DOMAIN}"
 
 API_URL = (
     "https://eqms.doe.gov.my/api3/publicmapproxy/PUBLIC_DISPLAY/"
@@ -26,7 +23,8 @@ API_PARAMS = {
 USER_AGENT = "HomeAssistant-MalaysiaAirQuality/0.1 (+https://github.com/zubir2k/homeassistant-malaysiaairquality)"
 
 # APIMS stores DATETIME as Malaysia wall-clock time encoded as a UTC epoch.
-MYT = ZoneInfo("Asia/Kuala_Lumpur")
+# Malaysia Standard Time is a fixed UTC+8 offset with no DST.
+MYT = timezone(timedelta(hours=8), name="MYT")
 
 CONF_STATION = "station"
 CONF_SCAN_INTERVAL = "scan_interval"
