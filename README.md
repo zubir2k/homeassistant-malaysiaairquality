@@ -56,7 +56,7 @@ show_mobile: true
 show_legend: true
 dark_mode: auto    # auto | true | false
 language: auto     # auto | en | ms
-# center: [3.139, 101.687]   # defaults to Home
+# center: [latitude, longitude]   # optional: defaults to Home Assistant home zone
 ```
 The `All Stations` sensor feeds the card. Its station list is kept out of the recorder, so it doesn't bloat your database. Map tiles come from OpenStreetMap, so the card needs internet; Leaflet itself is bundled.
 
