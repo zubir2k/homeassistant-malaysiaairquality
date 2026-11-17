@@ -4,6 +4,7 @@ from __future__ import annotations
 import sys
 from unittest.mock import patch
 import pytest
+from homeassistant.config_entries import ConfigEntryState
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.malaysia_airquality.const import API_URL, DOMAIN
@@ -98,5 +99,5 @@ async def cleanup_entries(hass):
     """Ensure any loaded config entries are unloaded after each test."""
     yield
     for entry in list(hass.config_entries.async_entries()):
-        if entry.state.loaded:
+        if entry.state == ConfigEntryState.LOADED:
             await hass.config_entries.async_unload(entry.entry_id)

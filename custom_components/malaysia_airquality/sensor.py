@@ -12,7 +12,7 @@ from homeassistant.const import (
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, EntityCategory, UnitOfLength,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import AirQualityConfigEntry
 from .const import CATEGORIES, category_for
@@ -105,7 +105,7 @@ SENSORS: tuple[AQSensorDescription, ...] = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: AirQualityConfigEntry, async_add_entities: AddConfigEntryEntitiesCallback
+    hass: HomeAssistant, entry: AirQualityConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     coordinator = entry.runtime_data
     entities: list[SensorEntity] = [AQSensor(coordinator, entry, desc) for desc in SENSORS]

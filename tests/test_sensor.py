@@ -13,7 +13,7 @@ async def test_sensor_values(hass: HomeAssistant, mock_config_entry: MockConfigE
     # Check API sensor
     state_api = hass.states.get("sensor.apims_cheras_air_pollutant_index")
     assert state_api is not None
-    assert state_api.state == "52.0"
+    assert float(state_api.state) == 52.0
 
     # Check Status sensor
     state_status = hass.states.get("sensor.apims_cheras_status")
@@ -28,4 +28,4 @@ async def test_sensor_values(hass: HomeAssistant, mock_config_entry: MockConfigE
     # Check PM2.5 sensor
     state_pm25 = hass.states.get("sensor.apims_cheras_pm2_5")
     assert state_pm25 is not None
-    assert state_pm25.state == "15.2"
+    assert float(state_pm25.state) == 15.2
