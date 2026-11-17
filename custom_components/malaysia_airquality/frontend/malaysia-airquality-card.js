@@ -2,7 +2,7 @@
  * Every DOE APIMS station on a map, coloured by the official API band.
  * Served by the malaysia_airquality integration; no separate install needed.
  */
-const CARD_VERSION = "0.2.8";
+const CARD_VERSION = "0.2.10";
 const BASE = "/malaysia_airquality";
 
 // DOE Malaysia API bands and their official colours
@@ -59,10 +59,15 @@ class MalaysiaAirQualityCard extends HTMLElement {
     return Math.ceil((this._config?.height || 420) / 50);
   }
 
-  // Sections view: resizable. Default rows follow `height` (HA row = 56px + 8px gap).
+  // Sections view: default rows follow `height` (HA section row = 56px + 8px gap = 64px).
   getGridOptions() {
     const h = Number(this._config?.height) || 420;
-    return { columns: 12, min_columns: 4, rows: Math.max(3, Math.round((h + 8) / 64)), min_rows: 3 };
+    return {
+      columns: 12,
+      min_columns: 4,
+      rows: Math.max(3, Math.round((h + 8) / 64)),
+      min_rows: 3,
+    };
   }
 
   static getConfigElement() {
@@ -116,17 +121,46 @@ class MalaysiaAirQualityCard extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <link rel="stylesheet" href="${BASE}/leaflet.css?v=1.9.4">
       <style>
-        :host { display: block; }
-        :host(.grid) { height: 100%; }
-        ha-card { overflow: hidden; display: flex; flex-direction: column; }
-        :host(.grid) ha-card { height: 100%; }
-        .wrap { position: relative; flex: 1 1 auto; min-height: 0; }
-        .leaflet-container { background: var(--secondary-background-color, #eee); font: inherit; }
+        :host { display: block; height: 100%; }
+        ha-card {
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          border-radius: var(--ha-card-border-radius, 12px);
+          isolation: isolate;
+          contain: paint;
+          position: relative;
+          box-sizing: border-box;
+        }
+        .wrap {
+          position: relative;
+          flex: 1 1 auto;
+          min-height: 0;
+          overflow: hidden;
+          border-radius: inherit;
+          isolation: isolate;
+        }
+        .leaflet-container {
+          background: var(--secondary-background-color, #eee);
+          font: inherit;
+          overflow: hidden;
+          border-radius: inherit;
+        }
         :host(.dark) .leaflet-tile-pane { filter: invert(.9) hue-rotate(180deg) brightness(1.1) contrast(1.1) saturate(.35); }
         :host(.dark) .leaflet-control-attribution, :host(.dark) .leaflet-bar a { background: #222; color: #ccc; }
         .head { padding: 12px 16px 0; font: 500 16px var(--paper-font-body1_-_font-family, inherit); }
-        #map { height: ${h}px; width: 100%; background: var(--secondary-background-color); }
-        :host(.grid) #map { height: 100%; min-height: 120px; }
+        #map {
+          height: ${h}px;
+          min-height: 120px;
+          width: 100%;
+          background: var(--secondary-background-color);
+          overflow: hidden;
+          border-radius: inherit;
+          position: relative;
+          z-index: 0;
+        }
+        :host(.grid) #map { height: 100%; }
         .msg { display:none; padding: 16px; color: var(--error-color); }
         .pin { display:flex; align-items:center; justify-content:center; border-radius:50%;
                font: 700 11px/1 system-ui, sans-serif; box-shadow: 0 1px 4px rgba(0,0,0,.45);
