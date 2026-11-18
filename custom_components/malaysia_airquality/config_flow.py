@@ -6,17 +6,15 @@ from typing import Any
 
 import voluptuous as vol
 
-from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlow
-from homeassistant.core import callback
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import (
-    NumberSelector, NumberSelectorConfig, NumberSelectorMode,
     SelectOptionDict, SelectSelector, SelectSelectorConfig, SelectSelectorMode,
 )
 
 from .api import ApimsError, Station, async_fetch_stations, distance_km, short_name
 from .const import (
-    CONF_SCAN_INTERVAL, CONF_STATION, DEFAULT_SCAN_INTERVAL, DOMAIN, MIN_SCAN_INTERVAL, STATION_NEAREST,
+    CONF_STATION, DOMAIN, STATION_NEAREST,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -126,22 +124,3 @@ class MalaysiaAirQualityFlow(ConfigFlow, domain=DOMAIN):
             data_schema=self._build_schema(current_station),
             errors=errors,
         )
-
-    @staticmethod
-    @callback
-    def async_get_options_flow(entry: ConfigEntry) -> OptionsFlow:
-        return MalaysiaAirQualityOptions()
-
-
-class MalaysiaAirQualityOptions(OptionsFlow):
-    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        if user_input is not None:
-            return self.async_create_entry(data=user_input)
-        current = self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
-        schema = vol.Schema({
-            vol.Required(CONF_SCAN_INTERVAL, default=current): NumberSelector(
-                NumberSelectorConfig(min=MIN_SCAN_INTERVAL, max=180, step=5,
-                                     unit_of_measurement="min", mode=NumberSelectorMode.BOX)
-            )
-        })
-        return self.async_show_form(step_id="init", data_schema=schema)
