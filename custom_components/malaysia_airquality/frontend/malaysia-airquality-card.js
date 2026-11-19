@@ -2,8 +2,10 @@
  * Every DOE APIMS station on a map, coloured by the official API band.
  * Served by the malaysia_airquality integration; no separate install needed.
  */
-const CARD_VERSION = "0.2.11";
+const CARD_VERSION = "0.2.13";
 const BASE = "/malaysia_airquality";
+const esc = (s) =>
+  String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 // DOE Malaysia API bands and their official colours
 const BANDS = [
@@ -180,7 +182,7 @@ class MalaysiaAirQualityCard extends HTMLElement {
                  background: rgba(0,0,0,.55); color:#fff; font: 11px system-ui; padding: 3px 7px; border-radius: 4px; }
       </style>
       <ha-card>
-        ${this._config.title ? `<div class="head">${this._config.title}</div>` : ""}
+        ${this._config.title ? `<div class="head">${esc(this._config.title)}</div>` : ""}
         <div class="msg"></div>
         <div class="wrap">
           <div id="map"></div>
@@ -259,7 +261,7 @@ class MalaysiaAirQualityCard extends HTMLElement {
       const cls = ["pin", id === selected ? "sel" : "", mobile ? "mob" : ""].join(" ");
       const icon = L.divIcon({
         className: "",
-        html: `<div class="${cls}" style="width:${size}px;height:${size}px;background:${b.bg};color:${b.fg}">${val}</div>`,
+        html: `<div class="${cls}" style="width:${size}px;height:${size}px;background:${b.bg};color:${b.fg}">${esc(val)}</div>`,
         iconSize: [size, size],
         iconAnchor: [size / 2, size / 2],
       });
@@ -270,11 +272,11 @@ class MalaysiaAirQualityCard extends HTMLElement {
         : "–";
       L.marker([lat, lon], { icon, zIndexOffset: b === NA ? -1000 : api || 0 })
         .bindPopup(
-          `<div class="pop"><b>${name}</b>${mobile ? " <small>(mobile)</small>" : ""}<br>
-           <span class="api">${val}</span><br>
-           <span class="chip" style="background:${b.bg};color:${b.fg}">${b[lang]}</span><br>
-           ${lang === "ms" ? "Pencemar" : "Pollutant"}: ${pol || "–"}<br>
-           <small>${id} · ${when}</small></div>`
+          `<div class="pop"><b>${esc(name)}</b>${mobile ? " <small>(mobile)</small>" : ""}<br>
+           <span class="api">${esc(val)}</span><br>
+           <span class="chip" style="background:${b.bg};color:${b.fg}">${esc(b[lang])}</span><br>
+           ${lang === "ms" ? "Pencemar" : "Pollutant"}: ${esc(pol || "–")}<br>
+           <small>${esc(id)} · ${esc(when)}</small></div>`
         )
         .addTo(this._layer);
     }
