@@ -1,5 +1,6 @@
 __pycache__/
-*.pyc
+*.py[cod]
 .DS_Store
 *.zip
 .pytest_cache/
+.venv/
