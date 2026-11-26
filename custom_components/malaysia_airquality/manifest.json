@@ -20,6 +20,8 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/zubir2k/homeassistant-malaysiaairquality/issues",
   "quality_scale": "bronze",
-  "requirements": [],
-  "version": "0.2.13"
+  "requirements": [
+    "python-apims>=0.1.0"
+  ],
+  "version": "0.3.0"
 }
