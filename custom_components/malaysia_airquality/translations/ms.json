@@ -45,6 +45,36 @@
       "pm10": {
         "name": "PM10"
       },
+      "so2": {
+        "name": "SO2"
+      },
+      "no2": {
+        "name": "NO2"
+      },
+      "o3": {
+        "name": "O3"
+      },
+      "co": {
+        "name": "CO"
+      },
+      "si_so2": {
+        "name": "Sub-Indeks SO2"
+      },
+      "si_no2": {
+        "name": "Sub-Indeks NO2"
+      },
+      "si_o3": {
+        "name": "Sub-Indeks O3"
+      },
+      "si_co": {
+        "name": "Sub-Indeks CO"
+      },
+      "temperature": {
+        "name": "Suhu"
+      },
+      "relative_humidity": {
+        "name": "Kelembapan Relatif"
+      },
       "status": {
         "name": "Status",
         "state": {

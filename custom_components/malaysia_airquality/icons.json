@@ -10,6 +10,36 @@
       "pm10": {
         "default": "mdi:blur-linear"
       },
+      "so2": {
+        "default": "mdi:molecule"
+      },
+      "no2": {
+        "default": "mdi:molecule"
+      },
+      "o3": {
+        "default": "mdi:molecule"
+      },
+      "co": {
+        "default": "mdi:molecule-co"
+      },
+      "si_so2": {
+        "default": "mdi:gauge"
+      },
+      "si_no2": {
+        "default": "mdi:gauge"
+      },
+      "si_o3": {
+        "default": "mdi:gauge"
+      },
+      "si_co": {
+        "default": "mdi:gauge"
+      },
+      "temperature": {
+        "default": "mdi:thermometer"
+      },
+      "relative_humidity": {
+        "default": "mdi:water-percent"
+      },
       "status": {
         "default": "mdi:shield-check",
         "state": {

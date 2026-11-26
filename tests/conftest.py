@@ -46,6 +46,16 @@ MOCK_FEATURES = [
             "DATETIME": 1731801600000,
             "PM25_CONC": 15.2,
             "PM10_CONC": 25.4,
+            "SO2_CONC": 1.673,
+            "NO2_CONC": 2.491,
+            "O3_CONC": 25.184,
+            "CO_CONC": 0.238,
+            "SI_SO2": 3.0,
+            "SI_NO2": 2.0,
+            "SI_O3": 19.0,
+            "SI_CO": 2.0,
+            "TEMPERATURE": 27.125,
+            "RELATIVE_HUMIDITY": 82.096,
         }
     },
     {

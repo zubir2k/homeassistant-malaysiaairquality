@@ -29,3 +29,11 @@ async def test_sensor_values(hass: HomeAssistant, mock_config_entry: MockConfigE
     state_pm25 = hass.states.get("sensor.apims_cheras_pm2_5")
     assert state_pm25 is not None
     assert float(state_pm25.state) == 15.2
+
+    # Check new gas concentration and weather sensors
+    assert float(hass.states.get("sensor.apims_cheras_so2").state) == 1.67
+    assert float(hass.states.get("sensor.apims_cheras_no2").state) == 2.49
+    assert float(hass.states.get("sensor.apims_cheras_o3").state) == 25.18
+    assert float(hass.states.get("sensor.apims_cheras_co").state) == 0.24
+    assert float(hass.states.get("sensor.apims_cheras_temperature").state) == 27.12
+    assert float(hass.states.get("sensor.apims_cheras_relative_humidity").state) == 82.1
