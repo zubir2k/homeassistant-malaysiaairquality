@@ -3,7 +3,7 @@
  * Served by the malaysia_airquality integration; no separate install needed.
  */
 const CARD_VERSION = "0.3.1";
-const BASE = "/malaysia_airquality";
+const BASE = new URL(".", import.meta.url).href.replace(/\/$/, "");
 const esc = (s) =>
   String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
