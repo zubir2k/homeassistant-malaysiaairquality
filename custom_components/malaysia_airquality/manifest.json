@@ -21,7 +21,7 @@
   "issue_tracker": "https://github.com/zubir2k/homeassistant-malaysiaairquality/issues",
   "quality_scale": "bronze",
   "requirements": [
-    "python-apims>=0.2.1"
+    "python-apims>=0.2.2"
   ],
-  "version": "0.3.2"
+  "version": "0.3.3"
 }
