@@ -8,7 +8,6 @@ from apims import (
     ApimsError,
     Station,
     distance_km,
-    find_nearest_station,
 )
 
 __all__ = [
